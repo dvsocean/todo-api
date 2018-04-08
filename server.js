@@ -19,12 +19,25 @@ app.get('/', function(req, res){
 	res.send('Todo API ROOT');
 });
 
-//GET REQUEST FOR /todos
 app.get('/todos', function(req, res){
 	res.json(todos);
 });
 
-//GET INDIVIDUAL TODOS /todos/id
+app.get('/todos/:id', function(req, res){
+	var todoId = parseInt(req.params.id, 10);
+	var found;
+	todos.forEach(function(todo){
+		if(todo.id === todoId){
+			found = todo;
+		}
+	});
+	if (found) {
+		res.json(found);
+	} else {
+		res.status(404).send();
+	}
+	// res.send('Asking for todo with id of: ' + req.params.id);
+});
 
 app.listen(PORT, function(){
 	console.log('Express listening on port number ' + PORT + '!');

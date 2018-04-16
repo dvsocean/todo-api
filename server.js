@@ -4,7 +4,19 @@ var _ = require('underscore');
 
 var app = express();
 var PORT = process.env.PORT || 3000;
-var items = [];
+var items = [{
+	sparks: {
+		id: 1,
+		description: "Backup computer",
+		completed: false
+	},
+	bars: {
+		id: 1,
+		description: "For my new bike",
+		completed: false
+	}
+}];
+
 var todoNextId = 1;
 
 app.use(bodyParser.json());

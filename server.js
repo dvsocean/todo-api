@@ -7,7 +7,12 @@ var PORT = process.env.PORT || 3000;
 var items = [{
 	sparks: {
 		description: "For my new engine",
-		completed: false
+		completed: false,
+		engine: {
+			power: "V8",
+			oil: "Synthetic",
+			rods: "Aluminum"
+		}
 	},
 	bars: {
 		description: "For my new motorcycle",

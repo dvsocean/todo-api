@@ -4,26 +4,26 @@ var _ = require('underscore');
 
 var app = express();
 var PORT = process.env.PORT || 3000;
-var todos = [];
+var items = [];
 var todoNextId = 1;
 
 app.use(bodyParser.json());
 
 app.get('/', function(req, res){
-	res.send('REST API - Designed for testing, available methods are GET, POST, PUT and DELETE. Endpoint is /todos');
+	res.send('REST API - Designed for testing, available methods are GET, POST, PUT and DELETE. Endpoint is /items');
 });
 
-app.get('/todos', function(req, res){
-	res.json(todos);
+app.get('/items', function(req, res){
+	res.json(items);
 });
 
-app.get('/todos/:id', function(req, res){
+app.get('/items/:id', function(req, res){
 	var todoId = parseInt(req.params.id, 10);
 	//Replace forEach
-	var found = _.findWhere(todos, {id: todoId});
+	var found = _.findWhere(items, {id: todoId});
 
 	// var found;
-	// todos.forEach(function(todo){
+	// items.forEach(function(todo){
 	// 	if(todo.id === todoId){
 	// 		found = todo;
 	// 	}
@@ -36,7 +36,7 @@ app.get('/todos/:id', function(req, res){
 	}
 });
 
-app.post('/todos', function(req, res){
+app.post('/items', function(req, res){
 	var body = _.pick(req.body, 'description', 'completed');
 	if(!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0){
 		return res.status(400).send();
@@ -46,27 +46,27 @@ app.post('/todos', function(req, res){
 
 	body.id = todoNextId++;
 
-	todos.push(body);
+	items.push(body);
 
 	console.log('description :' + body.description);
 	res.json(body);
 });
 
-app.delete('/todos/:id', function(req, res){
+app.delete('/items/:id', function(req, res){
 	var todoId = parseInt(req.params.id, 10);
-	var found = _.findWhere(todos, {id: todoId});
+	var found = _.findWhere(items, {id: todoId});
 
 	if (!found) {
 		res.status(404).json({"error":"NO TODO FOUND"});
 	} else {
-		todos = _.without(todos, found);
+		items = _.without(items, found);
 		res.json(found);
 	}
 });
 
-app.put('/todos/:id', function(req, res){
+app.put('/items/:id', function(req, res){
 	var todoId = parseInt(req.params.id, 10);
-	var found = _.findWhere(todos, {id: todoId});
+	var found = _.findWhere(items, {id: todoId});
 	var body = _.pick(req.body, 'description', 'completed');
 	var validAttr = {};
 

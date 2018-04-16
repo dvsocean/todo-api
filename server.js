@@ -7,12 +7,12 @@ var PORT = process.env.PORT || 3000;
 var items = [{
 	sparks: {
 		id: 1,
-		description: "Backup computer",
+		description: "For my new engine",
 		completed: false
 	},
 	bars: {
-		id: 1,
-		description: "For my new bike",
+		id: 2,
+		description: "For my new motorcycle",
 		completed: false
 	}
 }];

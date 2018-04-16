@@ -12,6 +12,11 @@ var items = [{
 			power: "V8",
 			oil: "Synthetic",
 			rods: "Aluminum"
+		},
+		count: {
+			bolts: 45,
+			washers: 15,
+			seals: 2
 		}
 	},
 	bars: {

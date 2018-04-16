@@ -10,7 +10,7 @@ var todoNextId = 1;
 app.use(bodyParser.json());
 
 app.get('/', function(req, res){
-	res.send('Todo API ROOT');
+	res.send('REST API - Designed for testing, available methods are GET, POST, PUT and DELETE. Endpoint is /todos');
 });
 
 app.get('/todos', function(req, res){
@@ -19,7 +19,7 @@ app.get('/todos', function(req, res){
 
 app.get('/todos/:id', function(req, res){
 	var todoId = parseInt(req.params.id, 10);
-	//Replaces forEach
+	//Replace forEach
 	var found = _.findWhere(todos, {id: todoId});
 
 	// var found;

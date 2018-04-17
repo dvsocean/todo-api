@@ -22,6 +22,7 @@ var Todo = sequelize.define('todo', {
 sequelize.sync().then(function() {
 	console.log("Everything synced!");
 
+//PULL FROM DB
 	Todo.findById(3).then(function(found){
 		console.log(found.toJSON());
 	});

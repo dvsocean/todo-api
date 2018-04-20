@@ -15,9 +15,47 @@ app.get('/', function(req, res) {
 	res.send('REST API - Designed for testing, available methods are GET, POST, PUT and DELETE. Endpoint is /items');
 });
 
+
+
+
+
+
+
+
+
 app.get('/items', function(req, res) {
-	res.json(items);
+	var query = req.query;
+	var where = {};
+	if(query.hasOwnProperty('completed') && query.completed === 'true'){
+		where.completed = true;
+	} else if (query.hasOwnProperty('completed') && query.completed === 'false') {
+		where.completed = false;
+	}
+
+	if (query.hasOwnProperty('q') && query.q.length > 0) {
+		where.description = {
+			$like: '%'+ query.q + '%'
+		};
+	}
+
+	db.todo.findAll({where: where}).then(function(todos){
+		res.json(todos);
+	}, function(e){
+		res.status(500).send();
+	});
+	// res.json(items);
 });
+
+
+
+
+
+
+
+
+
+
+
 
 app.get('/items/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
@@ -30,25 +68,7 @@ app.get('/items/:id', function(req, res) {
 	}, function(e) {
 		res.status(500).send();
 	});
-
-	// var found = _.findWhere(items, {
-	// 	id: todoId
-	// });
-
-	// if (found) {
-	// 	res.json(found);
-	// } else {
-	// 	res.status(404).send();
-	// }
 });
-
-
-
-
-
-
-
-
 
 app.post('/items', function(req, res) {
 	var body = _.pick(req.body, 'description', 'completed');

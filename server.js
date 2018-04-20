@@ -5,26 +5,7 @@ var db = require('./db.js');
 
 var app = express();
 var PORT = process.env.PORT || 3000;
-var items = [{
-	sparks: {
-		description: "For my new engine",
-		completed: false,
-		engine: {
-			power: "V8",
-			oil: "Synthetic",
-			rods: "Aluminum"
-		},
-		count: {
-			bolts: 45,
-			washers: 15,
-			seals: 2
-		}
-	},
-	bars: {
-		description: "For my new motorcycle",
-		completed: false
-	}
-}];
+var items = [];
 
 var todoNextId = 1;
 
@@ -40,24 +21,34 @@ app.get('/items', function(req, res) {
 
 app.get('/items/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
-	//Replace forEach
-	var found = _.findWhere(items, {
-		id: todoId
+	db.todo.findById(todoId).then(function(todo){
+		if (!!todo) {
+			res.json(todo.toJSON());
+		} else {
+			res.status(404).send();
+		}
+	}, function(e) {
+		res.status(500).send();
 	});
 
-	// var found;
-	// items.forEach(function(todo){
-	// 	if(todo.id === todoId){
-	// 		found = todo;
-	// 	}
+	// var found = _.findWhere(items, {
+	// 	id: todoId
 	// });
 
-	if (found) {
-		res.json(found);
-	} else {
-		res.status(404).send();
-	}
+	// if (found) {
+	// 	res.json(found);
+	// } else {
+	// 	res.status(404).send();
+	// }
 });
+
+
+
+
+
+
+
+
 
 app.post('/items', function(req, res) {
 	var body = _.pick(req.body, 'description', 'completed');

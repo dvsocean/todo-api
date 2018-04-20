@@ -21,3 +21,9 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 module.exports = db;
+
+
+
+//SEQUELIZE QUIT
+//RANDOM NUMBER GEN
+//NODE SERVER

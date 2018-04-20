@@ -15,14 +15,6 @@ app.get('/', function(req, res) {
 	res.send('REST API - Designed for testing, available methods are GET, POST, PUT and DELETE. Endpoint is /items');
 });
 
-
-
-
-
-
-
-
-
 app.get('/items', function(req, res) {
 	var query = req.query;
 	var where = {};
@@ -43,19 +35,7 @@ app.get('/items', function(req, res) {
 	}, function(e){
 		res.status(500).send();
 	});
-	// res.json(items);
 });
-
-
-
-
-
-
-
-
-
-
-
 
 app.get('/items/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
@@ -72,31 +52,12 @@ app.get('/items/:id', function(req, res) {
 
 app.post('/items', function(req, res) {
 	var body = _.pick(req.body, 'description', 'completed');
-	// if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
-	// 	return res.status(400).send();
-	// }
-
-	// body.description = body.description.trim();
-
-	// body.id = todoNextId++;
-
-	// items.push(body);
-
-	// console.log('description :' + body.description);
-	// res.json(body);
 	db.todo.create(body).then(function(todo){
 		res.json(todo.toJSON());
 	}, function(e){
 		res.status(400).json(e);
 	});
 });
-
-
-
-
-
-
-
 
 app.delete('/items/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10);

@@ -61,18 +61,22 @@ app.post('/items', function(req, res) {
 
 app.delete('/items/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
-	var found = _.findWhere(items, {
-		id: todoId
-	});
 
-	if (!found) {
-		res.status(404).json({
-			"error": "NO TODO FOUND"
-		});
-	} else {
-		items = _.without(items, found);
-		res.json(found);
-	}
+	db.todo.destroy({
+		where:{
+			id: todoId
+		}
+	}).then(function(dr){
+		if(dr === 0){
+			res.status(404).json({
+				error: 'Nothing deleted because ID was not found'
+			});
+		} else {
+			res.status(204).send();
+		}
+	}, function(e){
+		res.status(500).send();
+	});
 });
 
 app.put('/items/:id', function(req, res) {
@@ -106,6 +110,7 @@ app.put('/items/:id', function(req, res) {
 db.sequelize.sync().then(function() {
 	app.listen(PORT, function() {
 		console.log('Express listening on port number ' + PORT + '!');
+		//end of js function
 	});
 });
 

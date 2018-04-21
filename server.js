@@ -117,14 +117,14 @@ app.post('/users', function(req, res){
 	db.user.create(body).then(function(user){
 		res.status(200).json({
 			success: 'user successfully created!!',
-			newMember: user
+			newMember: user.toPublicJSON()
 		});
 	}, function(e){
 		res.status(400).json(e);
 	});
 });
 
-db.sequelize.sync().then(function() {
+db.sequelize.sync({force: true}).then(function() {
 	app.listen(PORT, function() {
 		console.log('Express listening on port number ' + PORT + '!');
 	});

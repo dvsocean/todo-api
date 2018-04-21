@@ -4,7 +4,7 @@ var connectionString = "postgres://hqiutrclpopfni:db73d00de1328afec9d5d0d2f7c784
 var sequelize;
 
 if (env === 'production') {
-	sequelize = new Sequelize(connectionString, {
+	sequelize = new Sequelize(process.env.DATABASE_URL + '?ssl=true', {
 		dialect: 'postgres'
 	});
 } else {

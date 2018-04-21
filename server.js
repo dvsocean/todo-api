@@ -79,6 +79,8 @@ app.delete('/items/:id', function(req, res) {
 	});
 });
 
+//Dele w 2
+
 app.put('/items/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
 	var found = _.findWhere(items, {

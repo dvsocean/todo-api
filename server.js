@@ -109,4 +109,3 @@ db.sequelize.sync().then(function() {
 	});
 });
 
-//ADD POSTGRES FOR PROD

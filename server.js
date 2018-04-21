@@ -141,5 +141,6 @@ app.post('/users/login', function(req, res){
 db.sequelize.sync({force: true}).then(function() {
 	app.listen(PORT, function() {
 		console.log('Express listening on port number ' + PORT + '!');
+		console.log("DATABASE_URL var is: " + process.env.DATABASE_URL);
 	});
 });

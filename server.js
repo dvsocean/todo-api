@@ -113,34 +113,38 @@ app.put('/items/:id', function(req, res) {
 	});
 });
 
-app.post('/users', function(req, res){
+app.post('/users', function(req, res) {
 	var body = _.pick(req.body, 'email', 'password');
-	db.user.create(body).then(function(user){
+	db.user.create(body).then(function(user) {
 		res.status(200).json({
 			success: 'user successfully created!!',
-			newMember: user.toPublicJSON()
+			newMember: user.toJSON()
 		});
-	}, function(e){
+	}, function(e) {
 		res.status(400).json(e);
 	});
 });
 
 //POST /users/login
-app.post('/users/login', function(req, res){
+app.post('/users/login', function(req, res) {
 	var body = _.pick(req.body, 'email', 'password');
-	db.user.authenticate(body).then(function(user){
-		res.header('Auth', user.generateToken('authentication')).json(user.toJSON());
-	}, function(e){
-		res.json({
-			error: 'User not found!!!!!!!!'
-		});
+
+	db.user.authenticate(body).then(function(user) {
+		var token = user.generateToken('authentication');
+
+		if (token) {
+			res.header('Auth', token).json(user.toJSON());
+		} else {
+			res.status(401).send();
+		}
+	}, function(e) {
+		console.log(e);
 	});
 });
 
 //to database
-db.sequelize.sync({force: true}).then(function() {
+db.sequelize.sync().then(function() {
 	app.listen(PORT, function() {
 		console.log('Express listening on port number ' + PORT + '!');
-		console.log("DATABASE_URL var is: " + process.env.DATABASE_URL);
 	});
 });

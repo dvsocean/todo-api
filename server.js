@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var _ = require('underscore');
 var db = require('./db.js');
 var bcrypt = require('bcrypt');
+var middleware = require('./middleware.js')(db);
 
 var app = express();
 var PORT = process.env.PORT || 3000;
@@ -16,7 +17,8 @@ app.get('/', function(req, res) {
 	res.send('REST API - Designed for testing, available methods are GET, POST, PUT and DELETE. Endpoint is /items');
 });
 
-app.get('/items', function(req, res) {
+// GET /items?completed=true&q=work
+app.get('/items', middleware.requireAuthentication, function(req, res) {
 	var query = req.query;
 	var where = {};
 	if (query.hasOwnProperty('completed') && query.completed === 'true') {
@@ -40,7 +42,7 @@ app.get('/items', function(req, res) {
 	});
 });
 
-app.get('/items/:id', function(req, res) {
+app.get('/items/:id', middleware.requireAuthentication, function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
 	db.todo.findById(todoId).then(function(todo) {
 		if (!!todo) {
@@ -53,7 +55,7 @@ app.get('/items/:id', function(req, res) {
 	});
 });
 
-app.post('/items', function(req, res) {
+app.post('/items', middleware.requireAuthentication, function(req, res) {
 	var body = _.pick(req.body, 'description', 'completed');
 	db.todo.create(body).then(function(todo) {
 		res.json(todo.toJSON());
@@ -62,7 +64,7 @@ app.post('/items', function(req, res) {
 	});
 });
 
-app.delete('/items/:id', function(req, res) {
+app.delete('/items/:id', middleware.requireAuthentication, function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
 
 	db.todo.destroy({
@@ -82,7 +84,7 @@ app.delete('/items/:id', function(req, res) {
 	});
 });
 
-app.put('/items/:id', function(req, res) {
+app.put('/items/:id', middleware.requireAuthentication, function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
 	var body = _.pick(req.body, 'description', 'completed');
 	var attributes = {};

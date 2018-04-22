@@ -4,7 +4,7 @@ var connectionString = "postgres://hqiutrclpopfni:db73d00de1328afec9d5d0d2f7c784
 var sequelize;
 
 if (env === 'production') {
-	sequelize = new Sequelize("postgresql-adjacent-64719", {
+	sequelize = new Sequelize("postgres://oafmamjmvcluji:fb71f808b548e2e914cad3abf49f07706d4ce89adc64dcf81ac1470eec9b57cb@ec2-54-243-239-66.compute-1.amazonaws.com:5432/d3vajpc559mnbe", {
 		dialect: 'postgres'
 	});
 } else {

@@ -19,13 +19,44 @@ var Todo = sequelize.define('todo', {
 	}
 });
 
-sequelize.sync().then(function() {
+
+var User = sequelize.define('user', {
+	email: Sequelize.STRING
+});
+
+Todo.belongsTo(User);
+User.hasMany(Todo);
+
+
+sequelize.sync().then(function(){
 	console.log("Everything synced!");
 
-//PULL FROM DB
-	Todo.findById(3).then(function(found){
-		console.log(found.toJSON());
+	User.findById(1).then(function(user){
+		user.getTodos({where: {
+			completed: false
+		}}).then(function(todos){
+			todos.forEach(function(todo){
+				console.log(todo.toJSON());
+			});
+		});
 	});
+	// User.create({
+	// 	email: 'harryBalzanya@gmail.com'
+	// }).then(function(){
+	// 	return Todo.create({
+	// 		description: 'clean the yard'
+	// 	});
+	// }).then(function(todo){
+	// 	User.findById(1).then(function(user){
+	// 		user.addTodo(todo);
+	// 	});
+	// });
+});
+
+//PULL FROM DB
+	// Todo.findById(3).then(function(found){
+	// 	console.log(found.toJSON());
+	// });
 
 //ADD NEW ITEM TO SQLITE
 	// Todo.create({
@@ -58,7 +89,7 @@ sequelize.sync().then(function() {
 	// }).catch(function(e){
 
 	// });
-});
+
 
 
 

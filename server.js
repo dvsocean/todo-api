@@ -20,7 +20,10 @@ app.get('/', function(req, res) {
 // GET /items?completed=true&q=work
 app.get('/items', middleware.requireAuthentication, function(req, res) {
 	var query = req.query;
-	var where = {};
+	var where = {
+		userId: req.user.get('id')
+	};
+
 	if (query.hasOwnProperty('completed') && query.completed === 'true') {
 		where.completed = true;
 	} else if (query.hasOwnProperty('completed') && query.completed === 'false') {
@@ -42,9 +45,15 @@ app.get('/items', middleware.requireAuthentication, function(req, res) {
 	});
 });
 
+//GET /items/:id
 app.get('/items/:id', middleware.requireAuthentication, function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
-	db.todo.findById(todoId).then(function(todo) {
+	db.todo.findOne({
+		where: {
+			id: todoId,
+			userId: req.user.get('id')
+		}
+	}).then(function(todo) {
 		if (!!todo) {
 			res.json(todo.toJSON());
 		} else {
@@ -76,13 +85,14 @@ app.post('/items', middleware.requireAuthentication, function(req, res) {
 
 
 
-
+//DELETE /items
 app.delete('/items/:id', middleware.requireAuthentication, function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
 
 	db.todo.destroy({
 		where: {
-			id: todoId
+			id: todoId,
+			userId: req.user.get('id')
 		}
 	}).then(function(dr) {
 		if (dr === 0) {
@@ -97,6 +107,7 @@ app.delete('/items/:id', middleware.requireAuthentication, function(req, res) {
 	});
 });
 
+//PUT /items/:id
 app.put('/items/:id', middleware.requireAuthentication, function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
 	var body = _.pick(req.body, 'description', 'completed');
@@ -113,7 +124,12 @@ app.put('/items/:id', middleware.requireAuthentication, function(req, res) {
 	// _.extend(found, attributes);
 	// res.json(found);
 
-	db.todo.findById(todoId).then(function(todo) {
+	db.todo.findOne({
+		where: {
+			id: todoId,
+			userId: req.user.get('id')
+		}
+	}).then(function(todo) {
 		if (todo) {
 			todo.update(attributes).then(function(todo) {
 				res.json(todo.toJSON());
@@ -158,7 +174,7 @@ app.post('/users/login', function(req, res) {
 });
 
 //to database
-db.sequelize.sync({force: true}).then(function() {
+db.sequelize.sync().then(function() {
 	app.listen(PORT, function() {
 		console.log('Express listening on port number ' + PORT + '!');
 	});

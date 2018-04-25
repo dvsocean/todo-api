@@ -159,22 +159,33 @@ app.post('/users', function(req, res) {
 //POST /users/login
 app.post('/users/login', function(req, res) {
 	var body = _.pick(req.body, 'email', 'password');
+	var userInstance;
 
 	db.user.authenticate(body).then(function(user) {
 		var token = user.generateToken('authentication');
+		userInstance = user;
+		return db.token.create({
+			token: token
+		});
 
-		if (token) {
-			res.header('Auth', token).json(user.toJSON());
-		} else {
-			res.status(401).send();
-		}
-	}, function(e) {
+	}).then(function(tokenInst){
+		res.header('Auth', tokenInst.get('token')).json(userInstance.toPublicJSON());
+	}).catch(function(e) {
 		console.log(e);
 	});
 });
 
+//DELETE /users/login
+app.delete('/users/login', middleware.requireAuthentication, function(req, res){
+	req.token.destroy().then(function(){
+		res.status(204).send();
+	}, function(){
+		res.status(500).send()
+	});
+});
+
 //to database
-db.sequelize.sync().then(function() {
+db.sequelize.sync({force: true}).then(function() {
 	app.listen(PORT, function() {
 		console.log('Express listening on port number ' + PORT + '!');
 	});
